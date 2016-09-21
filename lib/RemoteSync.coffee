@@ -142,8 +142,9 @@ class RemoteSync
 
       if !watchChangeSet
         _this = @
-        watcher.on('change', (path) ->
-          _this.uploadFile(path)
+        watcher.on('change', (path, stats) ->
+          if Math.abs(stats.mtime.getTime() - (new Date()).getTime()) < 5000
+            _this.uploadFile(path)
         )
         watcher.on('unlink', (path) ->
           _this.deleteFile(path)
