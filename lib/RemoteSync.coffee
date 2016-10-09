@@ -1,6 +1,7 @@
 path = require "path"
 fs = require "fs-plus"
 chokidar = require "chokidar"
+randomize = require "randomatic"
 
 exec = null
 minimatch = null
@@ -141,8 +142,9 @@ class RemoteSync
 
       if !watchChangeSet
         _this = @
-        watcher.on('change', (path) ->
-          _this.uploadFile(path)
+        watcher.on('change', (path, stats) ->
+          if Math.abs(stats.mtime.getTime() - (new Date()).getTime()) < 5000
+            _this.uploadFile(path)
         )
         watcher.on('unlink', (path) ->
           _this.deleteFile(path)
@@ -275,14 +277,14 @@ class RemoteSync
     realPath = path.join(@host.target, realPath).replace(/\\/g, "/")
 
     os = require "os" if not os
-    targetPath = path.join os.tmpDir(), "remote-sync"
+    targetPath = path.join os.tmpDir(), "remote-sync", randomize('A0', 16)
 
     @getTransport().download realPath, targetPath, =>
       @diff localPath, targetPath
 
   diffFolder: (localPath)->
     os = require "os" if not os
-    targetPath = path.join os.tmpDir(), "remote-sync"
+    targetPath = path.join os.tmpDir(), "remote-sync", randomize('A0', 16)
     @downloadFolder localPath, targetPath, =>
       @diff localPath, targetPath
 
