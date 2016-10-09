@@ -18,5 +18,10 @@
     "minimatch": "^3.0",
     "mkdirp": "^0.3",
     "ssh2": "^0.5"
+  },
+  "apmInstallSource": {
+    "type": "git",
+    "source": "https://github.com/1618033/remote-sync.git",
+    "sha": "16a2c73305759670d4e59e15bb4e02f1df5f9274"
   }
 }
